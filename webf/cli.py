@@ -87,6 +87,20 @@ class WebFaction(object):
                 'WebFaction Commands',
                 'Options for calling WebFaction XML-RPC API methods')
 
+        group_api.add_option('--list-app-types',
+                action='store', 
+                dest='list_app_types',
+                help='List available applications',
+                metavar='PATTERN'
+                )
+
+        group_api.add_option('--list-apps',
+                action='store', 
+                dest='list_apps',
+                help='List installed applications',
+                metavar='PATTERN'
+                )
+
         group_api.add_option('--create-app',
                 action='store', 
                 dest='create_app',

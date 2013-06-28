@@ -10,6 +10,7 @@ WebFaction XML-RPC API library
 
 '''
 
+import re
 import sys
 import xmlrpclib
 import logging
@@ -56,6 +57,40 @@ class WebFactionXmlRpc(object):
         self.session_id, account = self.server.login(username, password)
         self.log.debug("self.session_id %s account %s" % (self.session_id,
             account))
+
+    def _show_apps(self, apps, pattern=None):
+        for app in apps:
+            if pattern and pattern != 'None':
+                to_match = app['name'] + ' ' + app.get('description', '')
+                if not re.search(pattern, to_match):
+                    continue
+            print app['name']
+            print "\t", app.get('description', '')
+            print "\tAutostart: ", app['autostart'] 
+            print "\tExtra info: ", app['extra_info'] 
+            print
+
+    def list_app_types(self, pattern=None):
+        '''List available app types'''
+        try:
+            result = self.server.list_app_types(self.session_id)
+            self.log.debug(result)
+        except xmlrpclib.Fault, errmsg:
+            self.log.error(errmsg)
+            return 1
+
+        self._show_apps(result, pattern)
+
+    def list_apps(self, pattern=None):
+        '''List installed apps'''
+        try:
+            result = self.server.list_apps(self.session_id)
+            self.log.debug(result)
+        except xmlrpclib.Fault, errmsg:
+            self.log.error(errmsg)
+            return 1
+
+        self._show_apps(result, pattern)
 
     def create_app(self, app_name, app_type, autostart, extra_info):
         '''Create new application'''
