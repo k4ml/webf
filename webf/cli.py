@@ -154,6 +154,14 @@ class WebFaction(object):
                 metavar='DOMAIN SUBDOMAIN'
                 )
 
+        group_api.add_option('--list-websites',
+                action='store', 
+                dest='list_websites',
+                help='List websites',
+                nargs=1,
+                metavar='PATTERN'
+                )
+
         group_api.add_option('--create-website',
                 action='store', 
                 dest='create_website',

@@ -70,6 +70,18 @@ class WebFactionXmlRpc(object):
             print "\tExtra info: ", app['extra_info'] 
             print
 
+    def _call(self, command, *args):
+        '''Generic command'''
+        func = getattr(self.server, command)
+        try:
+            result = func(self.session_id, *args)
+            self.log.debug(result)
+        except xmlrpclib.Fault, errmsg:
+            self.log.error(errmsg)
+            return 1
+
+        return result
+
     def list_app_types(self, pattern=None):
         '''List available app types'''
         try:
@@ -219,6 +231,16 @@ class WebFactionXmlRpc(object):
         except xmlrpclib.Fault, errmsg:
             self.log.error(errmsg)
             return 1
+
+    def create_domain(self, domain, *subdomains):
+        result = self._call('create_domain', domain, *subdomains)
+        print result
+
+    def list_websites(self, pattern=None):
+        result = self._call('list_websites')
+        print result
+
+        #if pattern and pattern != 'None':
 
     # pylint: disable-msg=C0103
     def create_website(self, website_name, ip, https, subdomains, site_apps):
