@@ -58,17 +58,17 @@ class WebFactionXmlRpc(object):
         self.log.debug("self.session_id %s account %s" % (self.session_id,
             account))
 
-    def _show_apps(self, apps, pattern=None):
-        for app in apps:
+    def _show_result(self, result, id_field='name', pattern=None):
+        for item in result:
             if pattern and pattern != 'None':
-                to_match = app['name'] + ' ' + app.get('description', '')
+                to_match = item[id_field] + ' ' + item.get('description', '')
                 if not re.search(pattern, to_match):
                     continue
-            print app['name']
-            print "\t", app.get('description', '')
-            print "\tAutostart: ", app['autostart'] 
-            print "\tExtra info: ", app['extra_info'] 
-            print
+            for key, value in item.items():
+                if key == id_field:
+                    print value
+                else:
+                    print "\t", "%s: " % key, value
 
     def _call(self, command, *args):
         '''Generic command'''
@@ -91,7 +91,7 @@ class WebFactionXmlRpc(object):
             self.log.error(errmsg)
             return 1
 
-        self._show_apps(result, pattern)
+        self._show_result(result, pattern=pattern)
 
     def list_apps(self, pattern=None):
         '''List installed apps'''
@@ -102,7 +102,7 @@ class WebFactionXmlRpc(object):
             self.log.error(errmsg)
             return 1
 
-        self._show_apps(result, pattern)
+        self._show_result(result, pattern=pattern)
 
     def create_app(self, app_name, app_type, autostart, extra_info):
         '''Create new application'''
@@ -238,7 +238,7 @@ class WebFactionXmlRpc(object):
 
     def list_websites(self, pattern=None):
         result = self._call('list_websites')
-        print result
+        self._show_result(result, pattern=pattern)
 
         #if pattern and pattern != 'None':
 
